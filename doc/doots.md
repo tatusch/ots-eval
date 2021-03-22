@@ -4,7 +4,7 @@ In order to use the transition-based outlier detection algorithm DOOTS on your c
 
 ```python
 import pandas
-from close.outlier_detection.doots import DOOTS
+from ots_eval.outlier_detection.doots import DOOTS
 
 data = pandas.DataFrame(data, columns=['object_id', 'time', 'cluster_id', 'feature1', 'feature2'])
 detector = DOOTS(data, weighting=False, jaccard=False)

@@ -4,7 +4,7 @@ When using CLOSE as stability measure for over-time clusterings, many settings a
 
 ```python
 import pandas
-from close.stability_evaluation.close import CLOSE
+from ots_eval.stability_evaluation.close import CLOSE
 
 data = pandas.DataFrame(test_data, columns=['object_id', 'time', 'cluster_id', 'feature1', 'feature2'])
 rater = CLOSE(data, measure='mae', minPts=2, output=True, jaccard=True, weighting=True, exploitation_term=True)

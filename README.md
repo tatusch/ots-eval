@@ -8,6 +8,10 @@ You can simply install ots-eval by using pip:
 ```shell script
 pip install ots-eval
 ```
+You can import the package in your Python script via:
+```python
+import ots_eval
+```
 ### Dependencies
 ots-eval requires:
 * python>=3.7

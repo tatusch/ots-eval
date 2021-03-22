@@ -4,7 +4,7 @@ In order to use the clustering algorithm C(OTS)^2 on your data, first the object
 
 ```python
 import pandas
-from close.clustering.cots import COTS
+from ots_eval.clustering.cots import COTS
 
 data = pandas.DataFrame(data, columns=['object_id', 'time', 'feature1', 'feature2'])
 cots = COTS(data, min_cf=0.2, sw=3)

@@ -4,7 +4,7 @@ In order to use the transition-based outlier detection algorithm DACT on your cl
 
 ```python
 import pandas
-from close.outlier_detection.dact import DACT
+from ots_eval.outlier_detection.dact import DACT
 
 data = pandas.DataFrame(data, columns=['object_id', 'time', 'cluster_id', 'feature1', 'feature2'])
 detector = DACT(data)

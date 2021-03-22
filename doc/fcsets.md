@@ -5,7 +5,7 @@ When using FCSETS as stability measure for fuzzy over-time clusterings, first, F
 ```python
 import pandas
 import numpy
-from stability_evaluation.fcsets import FCSETS
+from ots_eval.stability_evaluation.fcsets import FCSETS
 
 # test_data for 5 time series with 4 timestamps and 2 clusters per year
 data = {
