@@ -6,7 +6,7 @@ The toolset was implemented by [Martha Krakowski (Tatusch)](https://dbs.cs.uni-d
 ## Installation
 You can simply install ots-eval by using pip:
 ```shell script
-pip install testtatusch
+pip install ots-eval
 ```
 ### Dependencies
 ots-eval requires:
@@ -18,11 +18,11 @@ ots-eval requires:
 
 ## Documentation
 In the `doc` folder, there are some explanations for the usage of every approach. 
-* [CLOSE](https://github.com/tatusch/ots-eval/doc/close.md)
-* [FCSETS](https://github.com/tatusch/ots-eval/doc/fcsets.md)
-* [DOOTS](https://github.com/tatusch/ots-eval/doc/doots.md)
-* [DACT](https://github.com/tatusch/ots-eval/doc/dact.md)
-* [C(OTS)^2](https://github.com/tatusch/ots-eval/doc/cots.md)
+* [CLOSE](https://github.com/tatusch/ots-eval/blob/main/doc/close.md)
+* [FCSETS](https://github.com/tatusch/ots-eval/blob/main/doc/fcsets.md)
+* [DOOTS](https://github.com/tatusch/ots-eval/blob/main/doc/doots.md)
+* [DACT](https://github.com/tatusch/ots-eval/blob/main/doc/dact.md)
+* [C(OTS)^2](https://github.com/tatusch/ots-eval/blob/main/doc/cots.md)
 
 ## License
 ots-eval is distributed under the 3-Clause BSD license.
