@@ -45,18 +45,24 @@ class FCSETS(object):
         num_time_series = self.data[self.start_year].shape[1]
         hr_dict = self.calculate_rel_ass_agreement(start_time, end_time, num_time_series)
 
-        # calculate out of place distance for every time series
+        #calculate stability(T_l)
         stability_dict = dict()
-        for i in range(0, num_time_series):
-            normalize_counter = 0
-            oop_sum = 0
-            for y1 in range(start_time, end_time):
-                for y2 in range(start_time, end_time):
-                    if y2 > y1:
-                        oop_sum = oop_sum + self.weighted_oop_distance(hr_dict[y1][i], hr_dict[y2][i])
-                        normalize_counter = normalize_counter + 1
-            stability_dict[i] = 1 - (oop_sum / normalize_counter)
+        # calculate stability(T_l) for every time series l
+        for l in range(0, num_time_series):
+            stability_dict[l] = 0
+            for i in range(start_time, end_time):
+                for r in range(i + 1, end_time):
+                    counter = 0
+                    denominator = 0
+                    for s in range(0, num_time_series):
+                        counter = counter \
+                                  + math.pow(hr_dict[i][l][s], num_time_series) \
+                                  * math.pow(math.fabs(hr_dict[i][l][s] - hr_dict[r][l][s]),2)
+                        denominator = denominator + hr_dict[i][l][s]
+                    stability_dict[l] = stability_dict[l] + (counter / denominator)
+            stability_dict[l] = 1 - (2/(num_time_series * (num_time_series - 1))) * stability_dict[l]
         return stability_dict
+
 
     def calculate_rel_ass_agreement(self, start_time: int, end_time: int, num_time_series: int) -> dict:
         """
@@ -77,27 +83,12 @@ class FCSETS(object):
                 hr_dict[i][j] = OrderedDict()
                 for k in range(0, num_time_series):
                     hr_dict[i][j][k] = self.e_p(self.data[i][:, j], self.data[i][:, k])
-                # Sort dicts by e_p
+                # Sorting by k - this is not necessary and can be removed
                 sorted_dict = OrderedDict(
                     {k: v for k, v in sorted(hr_dict[i][j].items(), key=lambda item: item[1], reverse=True)})
                 hr_dict[i][j] = sorted_dict
         return hr_dict
 
-    @staticmethod
-    def weighted_oop_distance(a: OrderedDict, b: OrderedDict) -> float:
-        """
-        Params:
-            a (OrderedDict) - {<object_id>: <hr_index>} containing the Hüllermeier-Rifqi indices regarding a time series to all others in the first timestamp
-            b (OrderedDict) - {<object_id>: <hr_index>} containing the Hüllermeier-Rifqi indices regarding the same time series to all others in the second timestamp
-        Returns:
-            weighted_oop_distance (float) - weighted out of place distance of two dicts (regarding their keys)
-        """
-        distance = 0
-        e_p_sum = 0
-        for k in a.keys():
-            distance = distance + a[k] * math.fabs(list(a.keys()).index(k) - list(b.keys()).index(k))
-            e_p_sum += a[k]
-        return distance / (e_p_sum * len(list(a.keys())))
 
     @staticmethod
     @jit
