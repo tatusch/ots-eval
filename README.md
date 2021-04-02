@@ -18,7 +18,6 @@ ots-eval requires:
 * pandas>=1.0.0
 * numpy>=1.19.2
 * scipy>=1.3.0
-* numba>=0.50.0
 
 ## Documentation
 In the `doc` folder, there are some explanations for the usage of every approach. 

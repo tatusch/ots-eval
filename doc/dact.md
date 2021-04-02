@@ -6,11 +6,11 @@ In order to use the transition-based outlier detection algorithm DACT on your cl
 import pandas
 from ots_eval.outlier_detection.dact import DACT
 
-data = pandas.DataFrame(data, columns=['object_id', 'time', 'cluster_id', 'feature1', 'feature2'])
+data = pandas.DataFrame(data, columns=['object_id', 'time', 'cluster_id'])
 detector = DACT(data)
 ```
 
-The names of the columns in the DataFrames are not relevant but the order of them.
+The names of the columns in the DataFrames are not relevant but the order of them. The DataFrame may contain further columns but only the first three are considered.
 
 The clusters can then be calculated by calling
 

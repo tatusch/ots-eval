@@ -110,7 +110,7 @@ class CLOSE(object):
                     'quality': avg_quality,
                     'pre-factor': (1 - (num_timestamps / num_clusters) ** 2)}
 
-    def close_t_clusterings(self, start_time: int = None, end_time: int = None, return_measures: bool = False) -> Union[float, dict]:
+    def rate_time_clustering(self, start_time: int = None, end_time: int = None, return_measures: bool = False) -> Union[float, dict]:
         """
         Optional:
             start_time (optional) - int: time that should be considered as beginning
@@ -131,9 +131,9 @@ class CLOSE(object):
 
         for time in timestamps:
             if not return_measures:
-                score += self.rate_time_clustering(cluster_ratings, time)
+                score += self.calc_t_clustering_rating(cluster_ratings, time)
             else:
-                cur_scores = self.rate_time_clustering(cluster_ratings, time, return_measures=True)
+                cur_scores = self.calc_t_clustering_rating(cluster_ratings, time, return_measures=True)
                 score += cur_scores['score']
                 quality += cur_scores['quality']
                 stability += cur_scores['stability']
@@ -162,7 +162,7 @@ class CLOSE(object):
                     'quality': quality,
                     'pre-factor': factor}
 
-    def rate_time_clustering(self, cluster_ratings: dict, time: int, return_measures: bool = False) -> Union[float, dict]:
+    def calc_t_clustering_rating(self, cluster_ratings: dict, time: int, return_measures: bool = False) -> Union[float, dict]:
         """
         Params:
             cluster_ratings (dict) - {<object_id>: <rating>} with ratings of objects
@@ -382,60 +382,6 @@ class CLOSE(object):
                     # print(str(id) + " is not assigned to any cluster before t=" + str(end_time))
                     continue
 
-            ratings[id] = round(object_rating, 3)
-        return ratings
-
-    def calc_object_rating_old(self, cluster_composition: dict, ids_to_rate: Union[list, np.ndarray], end_time: int, start_time: int = None) -> dict:
-        """
-        Params:
-            cluster_composition (dict) - {<cluster_id>: {<contained_cluster_id>: <proportion>}} containing the proportions of
-                                  clusters (contained_cluster_id) that belong to cluster (cluster_id)
-            ids_to_rate (array-like) - list of data points that should be rated
-            end_time (int) - representing the timestamp which should be rated up to
-        Optional:
-            start_time (int) - time that should be considered as beginning
-        Returns:
-            ratings - dict {<object_id>: <rating>} with ratings of objects
-        """
-        ratings = {}
-        gr_clusters = self._data.groupby(self._object_column_name)
-
-        # iterate over object ids
-        for id in ids_to_rate:
-            cur_group = gr_clusters.get_group(id)
-            cur_group = cur_group[cur_group[self._time_column_name] <= end_time]
-
-            if start_time is not None:
-                cur_group = cur_group[cur_group[self._time_column_name] >= start_time]
-
-            try:
-                # id of the cluster of the last considered timestamp
-                last_cluster = cur_group[cur_group[self._time_column_name] == end_time][self._cluster_column_name].iloc[0]
-            except IndexError:
-                print(">>INDEXERROR - LAST CLUSTER<< ID: ", str(id), ", Start Time: ", str(start_time), ", End Time: ", str(end_time))
-                continue
-
-            # if object is an outlier for the considered timestamp, it is skipped
-            if int(last_cluster) < 0:
-                continue
-
-            cluster_ids = cur_group[self._cluster_column_name].unique()
-
-            object_rating = 0
-            num_clusters = 0
-            for cluster in cluster_ids:
-                # Ignore Outliers
-                if cluster == last_cluster or int(cluster) < 0:
-                    continue
-                # Add the proportion of clusters before last timestamp, that merged in last cluster
-                else:
-                    object_rating += cluster_composition[last_cluster][cluster]
-                    num_clusters += 1
-            try:
-                object_rating /= num_clusters
-            except ZeroDivisionError:
-                # print(str(id) + " is not assigned to any cluster before t=" + str(end_time))
-                x = 1
             ratings[id] = round(object_rating, 3)
         return ratings
 

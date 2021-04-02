@@ -15,7 +15,7 @@ def test():
     rater.rate_clustering()
 
     rater = CLOSE(data, 'exploit', 2, jaccard=True, weighting=True)
-    rater.rate_t_clusterings()
+    rater.rate_time_clustering()
 
 
 def main():

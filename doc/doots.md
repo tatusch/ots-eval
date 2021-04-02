@@ -6,15 +6,15 @@ In order to use the transition-based outlier detection algorithm DOOTS on your c
 import pandas
 from ots_eval.outlier_detection.doots import DOOTS
 
-data = pandas.DataFrame(data, columns=['object_id', 'time', 'cluster_id', 'feature1', 'feature2'])
+data = pandas.DataFrame(data, columns=['object_id', 'time', 'cluster_id'])
 detector = DOOTS(data, weighting=False, jaccard=False)
 ```
 
 Explanation of the parameter:
 
-<figure class="table"><table><thead><tr><th>Parameter</th><th><br data-cke-filler="true"></th><th>Default</th><th>Datatype</th><th>Description</th></tr></thead><tbody><tr><td><code>data</code></td><td>-</td><td>-</td><td><i>pandas.DataFrame</i></td><td>with first column being the objectID, second being the timestamp, third being the clusterID and following columns being the features</td></tr><tr><td><code>jaccard</code></td><td>optional</td><td><i>False</i></td><td><i>boolean</i></td><td>indicating if jaccard index should be used</td></tr><tr><td><code>weighting</code></td><td>optional</td><td><i>False</i></td><td><i>boolean</i></td><td>indicating if more distant past should be weighted lower than nearer past</td></tr></tbody></table></figure>
+<figure class="table"><table><thead><tr><th>Parameter</th><th><br data-cke-filler="true"></th><th>Default</th><th>Datatype</th><th>Description</th></tr></thead><tbody><tr><td><code>data</code></td><td>-</td><td>-</td><td><i>pandas.DataFrame</i></td><td>with first column being the objectID, second being the timestamp, third being the clusterID</td></tr><tr><td><code>jaccard</code></td><td>optional</td><td><i>False</i></td><td><i>boolean</i></td><td>indicating if jaccard index should be used</td></tr><tr><td><code>weighting</code></td><td>optional</td><td><i>False</i></td><td><i>boolean</i></td><td>indicating if more distant past should be weighted lower than nearer past</td></tr></tbody></table></figure>
 
-The names of the columns in the DataFrames are not relevant but the order of them.
+The names of the columns in the DataFrames are not relevant but the order of them. The DataFrame may contain further columns but only the first three are considered.
 
 The outliers can then be calculated by calling
 

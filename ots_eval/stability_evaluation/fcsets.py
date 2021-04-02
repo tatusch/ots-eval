@@ -1,8 +1,6 @@
 import numpy as np
-from collections import OrderedDict
 from typing import Union
 import math
-from numba import jit
 
 
 class FCSETS(object):
@@ -10,10 +8,12 @@ class FCSETS(object):
     def __init__(self, data: dict):
         """
            Params:
-               data (dict) - with format {<timestamp>: <membership_matrix>}, with the membership matrices being numpy.arrays of shape (num_clusters, num_time_series)
+               data (dict) - with format {<timestamp>: <membership_matrix>}, with the membership matrices being
+                             numpy.arrays of shape (num_clusters, num_time_series)
         """
         self.data = data
         timestamps = self.data.keys()
+        self.num_timestamps = len(timestamps)
         self.start_year = min(timestamps)
         self.end_year = max(timestamps)
 
@@ -45,24 +45,22 @@ class FCSETS(object):
         num_time_series = self.data[self.start_year].shape[1]
         hr_dict = self.calculate_rel_ass_agreement(start_time, end_time, num_time_series)
 
-        #calculate stability(T_l)
-        stability_dict = dict()
         # calculate stability(T_l) for every time series l
+        stability_dict = dict()
         for l in range(0, num_time_series):
             stability_dict[l] = 0
             for i in range(start_time, end_time):
-                for r in range(i + 1, end_time):
+                for r in range(i + 1, end_time + 1):
                     counter = 0
                     denominator = 0
                     for s in range(0, num_time_series):
                         counter = counter \
                                   + math.pow(hr_dict[i][l][s], num_time_series) \
-                                  * math.pow(math.fabs(hr_dict[i][l][s] - hr_dict[r][l][s]),2)
-                        denominator = denominator + hr_dict[i][l][s]
+                                  * math.pow(math.fabs(hr_dict[i][l][s] - hr_dict[r][l][s]), 2)
+                        denominator = denominator + math.pow(hr_dict[i][l][s], num_time_series)
                     stability_dict[l] = stability_dict[l] + (counter / denominator)
-            stability_dict[l] = 1 - (2/(num_time_series * (num_time_series - 1))) * stability_dict[l]
+            stability_dict[l] = 1 - (2 / (self.num_timestamps * (self.num_timestamps - 1))) * stability_dict[l]
         return stability_dict
-
 
     def calculate_rel_ass_agreement(self, start_time: int, end_time: int, num_time_series: int) -> dict:
         """
@@ -80,18 +78,12 @@ class FCSETS(object):
         for i in range(start_time, end_time + 1):
             hr_dict[i] = dict()
             for j in range(0, num_time_series):
-                hr_dict[i][j] = OrderedDict()
+                hr_dict[i][j] = dict()
                 for k in range(0, num_time_series):
                     hr_dict[i][j][k] = self.e_p(self.data[i][:, j], self.data[i][:, k])
-                # Sorting by k - this is not necessary and can be removed
-                sorted_dict = OrderedDict(
-                    {k: v for k, v in sorted(hr_dict[i][j].items(), key=lambda item: item[1], reverse=True)})
-                hr_dict[i][j] = sorted_dict
         return hr_dict
 
-
     @staticmethod
-    @jit
     def e_p(u_x: Union[list, np.array], u_y: Union[list, np.array]) -> float:
         """
         Params:
@@ -103,4 +95,4 @@ class FCSETS(object):
         ep = 0
         for i in range(0, u_x.shape[0]):
             ep = ep + np.absolute(u_x[i] - u_y[i])
-        return 1 - ep/2
+        return 1 - ep / 2

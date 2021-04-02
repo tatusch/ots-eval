@@ -14,7 +14,7 @@ Explanation of the parameter:
 
 <figure class="table"><table><thead><tr><th>Parameter</th><th><br data-cke-filler="true"></th><th>Default</th><th>Datatype</th><th>Description</th></tr></thead><tbody><tr><td><code>data</code></td><td>-</td><td>-</td><td><i>pandas.DataFrame</i></td><td>with first column being the objectID, second being the timestamp and following columns being the features</td></tr><tr><td><code>min_cf</code></td><td>optional</td><td><i>0.015</i></td><td><i>float</i></td><td>threshold for the minimum connection factor for inserting edges to the graph</td></tr><tr><td><code>sw</code></td><td>optional</td><td><i>3</i></td><td><i>int</i></td><td>width of sliding window</td></tr></tbody></table></figure>
 
-The names of the columns in the DataFrames are not relevant but the order of them.
+The names of the columns in the DataFrames are not relevant but the order of them. All columns after the second one are interpreted as features.
 
 The clusters can then be calculated by calling
 
