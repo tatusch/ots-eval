@@ -27,6 +27,10 @@ In the `doc` folder, there are some explanations for the usage of every approach
 * [DACT](https://github.com/tatusch/ots-eval/blob/main/doc/dact.md)
 * [C(OTS)^2](https://github.com/tatusch/ots-eval/blob/main/doc/cots.md)
 
+## Data
+In the `data` folder, the generated data sets from the listed publications are provided. A short explanation can be found in the `doc` folder:
+* [DATA](https://github.com/tatusch/ots-eval/blob/main/doc/data.md)
+
 ## License
 ots-eval is distributed under the 3-Clause BSD license.
 
@@ -64,3 +68,8 @@ In: _Advanced Data Mining and Applications, ADMA 2020_, pages 360–369.
 Klassen, G., Tatusch, M., and Conrad, S. (2020).  
 **Clustering of time series regarding their over-time stability**.  
 In: _Proceedings of the 2020 IEEE Symposium Series on Computational Intelligence (SSCI)_, pages 1051–1058.
+
+<a id="6">[[7]]() 
+Klassen, G., Tatusch, M., and Conrad, S. (2021).  
+**Cluster-Based Stability Evaluation in Time Series Data Sets**.  
+In: *(submitted)*.
