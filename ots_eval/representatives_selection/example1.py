@@ -1,6 +1,6 @@
 import pandas
-from Representatives import Representatives
-from Plotter import Plotter
+from representatives import Representatives
+from visualizations.plotly.plotter_3d import Plotter3d
 
 
 def get_data():
@@ -37,7 +37,7 @@ def get_data():
 def example_representatives(df):
     rp = Representatives()
     representatives = rp.get_representatives(df)
-    pl = Plotter(df)
+    pl = Plotter3d(df)
     pl.add_representatives(representatives)
     pl.generate_fig()
     fig = pl.fig_3d
