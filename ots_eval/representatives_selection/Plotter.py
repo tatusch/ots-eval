@@ -1,34 +1,84 @@
 import plotly.graph_objects as go
+import plotly
+from itertools import cycle
 import pandas as pd
-import numpy as np
 
-#class Plotter:
-#    def __init__(self, df):
-#        df.groupby(['object_id']).apply(tuple)
-#    def generate_fig_3d(self):
+class Plotter:
+    def __init__(self, df, x_col="time", y_col="feature1", z_col="feature2"):
+        self.fig_3d = go.Figure()
+        self.df = df
+        self.x_col = x_col
+        self.y_col = y_col
+        self.z_col = z_col
+        self.fig_3d.update_layout(
+            scene=dict(
+                xaxis_title=self.x_col, yaxis_title=self.y_col, zaxis_title=self.z_col
+            ),         
+        )
 
-def get_data():
-    # test_data for 6 time series with 3 timestamps, 2 clusters per timestamp and 2 features (features are optional as those are not considered in CLOSE)
-    test_data = [[1, 1, 1, 1 / 3, 1 / 6], [2, 1, 1, 2 / 3, 1 / 6], [3, 1, 1, 1 / 3, 2 / 6], [4, 1, 2, 2 / 3, 4 / 6], [5, 1, 2, 3 / 3, 4 / 6], [6, 1, 2, 2 / 3, 5 / 6],
-                 [1, 2, 3, 2 / 3, 1 / 6], [2, 2, 3, 3 / 3, 1 / 6], [3, 2, 3, 2 / 3, 2 / 6], [4, 2, 4, 2 / 3, 5 / 6], [5, 2, 4, 3 / 3, 5 / 6], [6, 2, 4, 2 / 3, 6 / 6],
-                 [1, 3, 5, 2 / 3, 1 / 6], [2, 3, 5, 2 / 3, 2 / 6], [3, 3, 5, 1 / 3, 1 / 6], [4, 3, 6, 2 / 3, 5 / 6], [5, 3, 6, 3 / 3, 4 / 6], [6, 3, 6, 1 / 3, 6 / 6]]
+    def add_representatives(self, df):
+        df["representative"] = True
+        merged_df = pd.concat([self.df, df]).reset_index(drop=True)
+        self.df = merged_df
 
-    data = pd.DataFrame(test_data, columns=['object_id', 'time', 'cluster_id', 'feature1', 'feature2'])
-    return data
+    def generate_lines(self):
+        ts_group_condition = ["object_id"]
+        if "representative" in self.df.columns:
+            ts_group_condition.append("representative")
+        ts = (
+            self.df.groupby(ts_group_condition, dropna=False)
+            .agg(lambda x: list(x))
+            .reset_index()
+        )
+        for index, row in ts.iterrows():
+            line_width = 3
+            legendgroup = "time_series"
+            legendgrouptitle_text = "Time series"
+            dash = "solid"
+            if "representative" in row and row["representative"] == True:
+                line_width = 10
+                legendgroup = "representative"
+                legendgrouptitle_text = "Representative time series"
+                dash = "dash"
 
-df=get_data()
-print(df)
-ts=df.groupby(['object_id']).agg(lambda x: list(x)).reset_index()
-clusters=df.groupby(['cluster_id']).agg(lambda x: list(x)).reset_index()
+            self.fig_3d.add_trace(
+                go.Scatter3d(
+                    x=row[self.x_col],
+                    y=row[self.y_col],
+                    z=row[self.z_col],
+                    mode="lines",
+                    line=dict(width=line_width, dash=dash),
+                    name=f"time series {row['object_id']}",
+                    legendgroup=legendgroup,
+                    legendgrouptitle_text=legendgrouptitle_text,
+                )
+            )
 
-print(ts)
+    def generate_markers(self):
+        colors = cycle(plotly.colors.qualitative.Plotly)
+        cluster_group_condition = ["cluster_id"]
 
-fig=go.Figure()
+        clusters = (
+            self.df.groupby(cluster_group_condition, dropna=False)
+            .agg(lambda x: list(x))
+            .reset_index()
+        )
+        for index, row in clusters.iterrows():
+            marker_size = 10
+            marker_color = next(colors)
+            self.fig_3d.add_trace(
+                go.Scatter3d(
+                    x=row[self.x_col],
+                    y=row[self.y_col],
+                    z=row[self.z_col],
+                    mode="markers",
+                    marker=dict(size=marker_size, color=marker_color),
+                    name=f"cluster {row['cluster_id']}",
+                    legendgroup="clusters",
+                    legendgrouptitle_text="Clusters",
+                )
+            )
 
-for index,row in ts.iterrows():    
-    fig.add_trace(go.Scatter3d(x=row['time'],y=row['feature1'],z=row['feature2'], mode='lines', name=f"time series {row['object_id']}",))
-   
-
-for index,row in clusters.iterrows():
-    fig.add_trace(go.Scatter3d(x=row['time'],y=row['feature1'],z=row['feature2'], mode='markers', name=f"cluster {row['cluster_id']}",))
-fig.show()
+    def generate_fig(self):
+        self.generate_lines()
+        self.generate_markers()
