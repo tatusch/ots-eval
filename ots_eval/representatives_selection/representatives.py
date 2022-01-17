@@ -33,6 +33,6 @@ class Representatives:
         return centroid_df
 
     def get_representatives(self, df, representative_type="centroids"):
-        extended_df = self.extend_df_by_cluster_path_group(df)
+        extended_df = self.extend_df_by_cluster_path_group(df)       
         if representative_type == "centroids":
             return self.get_centroids(extended_df)

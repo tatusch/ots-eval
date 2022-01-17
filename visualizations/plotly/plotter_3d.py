@@ -82,3 +82,4 @@ class Plotter3d:
     def generate_fig(self):
         self.generate_lines()
         self.generate_markers()
+        return self.fig_3d
