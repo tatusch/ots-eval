@@ -39,7 +39,13 @@ data=get_data()
 
 
 rp=Representatives()
+extended_test=rp.extend_df_by_cluster_path_group(data)
+print('extended df:')
+print(extended_test)
+print()
 rp_data=rp.get_representatives(data)
+print('only rps:')
+print(rp_data)
 plotter=Plotter(data)
 plotter.add_representatives(rp_data)
 fig_ts_only=plotter.generate_fig()

@@ -23,16 +23,21 @@ class Representatives:
         return df_cluster_path_group_extended
 
     def get_centroids(self, df):
+        max_object_id=df.object_id.max()
         centroid_df = (
             df.drop(columns=["object_id"])
             .groupby(["time", "group_id", "cluster_id"])
             .mean()
             .reset_index()
-            .rename(columns={"group_id": "object_id"})
-        )
+            .rename(columns={"group_id": "object_id"})           
+        )        
+        centroid_df['object_id']=centroid_df['object_id'].apply(lambda x:x+max_object_id+1)
+        
         return centroid_df
 
     def get_representatives(self, df, representative_type="centroids"):
-        extended_df = self.extend_df_by_cluster_path_group(df)       
+        extended_df = self.extend_df_by_cluster_path_group(df)  
+       
         if representative_type == "centroids":
             return self.get_centroids(extended_df)
+
