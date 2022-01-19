@@ -55,13 +55,16 @@ class Plotter:
                                 bbox=dict(boxstyle='round', alpha=0.3,color=kwargs['color']),
                                 va='center', ha='center', weight='bold', alpha=1)
             return
-        df_cluster_groups=self.extend_df_by_cluster_path_group()        
+        df_cluster_groups=self.extend_df_by_cluster_path_group()
+
+        sns   
         g=sns.FacetGrid(data=df_cluster_groups,col=self.time_col, palette='Set1', hue='group_id')            
         if 'representative' in self.df.columns:
             g.map(f,self.f1_col,self.f2_col, self.object_id_col,'representative')
         else:
             g.map(f,self.f1_col,self.f2_col, self.object_id_col)
         #g.add_legend(title='clusters', labels=['1. cluster', '2. cluster', '3. cluster'])
+       
         return g
     
     def add_representatives(self, df):
