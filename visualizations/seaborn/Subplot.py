@@ -1,20 +1,23 @@
 import seaborn as sns
+
+
 class Subplot:
-    def __init__(self,  df_mapping=dict(
+    def __init__(
+        self,
+        df_mapping=dict(
             time_col="time",
             object_id_col="object_id",
             f1_col="feature1",
             f2_col="feature2",
             group_col="group_id",
         ),
-        
-        ):
+    ):
         self.f1_col = df_mapping["f1_col"]
         self.f2_col = df_mapping["f2_col"]
         self.group_col = df_mapping["group_col"]
         self.object_id_col = df_mapping["object_id_col"]
 
-    def get_style_ts_patch(self,color):
+    def get_style_ts_patch(self, color):
         style_ts_patch = dict(
             fontsize=10,
             xytext=(-2, -1.5),
@@ -26,8 +29,7 @@ class Subplot:
         )
         return style_ts_patch
 
-
-    def get_style_rp_ts_patch(self,edgecolor, linewidth):
+    def get_style_rp_ts_patch(self, edgecolor, linewidth):
 
         style_rp_ts_patch = dict(
             fontsize=10,
@@ -47,7 +49,6 @@ class Subplot:
         )
         return style_rp_ts_patch
 
-
     def _get_sub_plot(self, x, y, z, r=None, **kwargs):
 
         ax = sns.scatterplot(
@@ -58,7 +59,9 @@ class Subplot:
                 ax.annotate(
                     z.values[i],
                     xy=(x.values[i], y.values[i]),
-                    **self.get_style_rp_ts_patch(edgecolor=kwargs["color"], linewidth=2),
+                    **self.get_style_rp_ts_patch(
+                        edgecolor=kwargs["color"], linewidth=2
+                    ),
                 )
                 ax.annotate(
                     z.values[i],
@@ -72,8 +75,8 @@ class Subplot:
                     **self.get_style_ts_patch(color=kwargs["color"]),
                 )
         return
-    
-    def addSubplots(self,g,rp_contained=False):
+
+    def addSubplots(self, g, rp_contained=False):
         if rp_contained:
             g.map(
                 self._get_sub_plot,
